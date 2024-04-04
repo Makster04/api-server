@@ -1,36 +1,38 @@
 'use strict';
 
-// define all routing logic for our RESTful service
 const express = require('express');
-const { Team } = require('../models');
+const { Team } = require('../models'); // Corrected import for Team model
 
 const router = express.Router();
 
-// router.use(validator);
-
-// reading from the team table
+// Reading from the team table
 router.get('/team', async (req, res) => {
   let records = await Team.findAll();
   res.json(records);
 });
 
 router.get('/team/:id', async (req, res) => {
-  let records = await Team.findOne({ where: { id: req.params.id} });
-  res.json(records);
+  let record = await Team.findOne({ where: { id: req.params.id } });
+  res.json(record);
 });
 
-// create a new pokmeon in the table
-router.post('/team',  async(req, res) => {
-  // where is the team data?
+// Create a new team in the table
+router.post('/team', async (req, res) => {
   let record = await Team.create(req.body);
   res.json(record);
 });
 
-//update an existing team in the table
-router.put('/team/:id', (req, res) => {});
+// Update an existing team in the table
+router.put('/team/:id', async (req, res) => {
+  let record = await Team.update(req.body, { where: { id: req.params.id } });
+  res.json(record);
+});
 
-// remove an existing team in the table
-router.delete('/team/:id', (req, res) => {});
+// Remove an existing team from the table
+router.delete('/team/:id', async (req, res) => {
+  await Team.destroy({ where: { id: req.params.id } });
+  res.status(204).end();
+});
 
 module.exports = router;
 

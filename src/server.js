@@ -25,11 +25,12 @@ app.use((err, req, res, next) => {
 module.exports = app;
 
 // Starting the server
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-}
+module.exports = {
+  start: (port) => app.listen(port, () => {
+    console.log('API SERVER RUNNING ON PORT ::', port);
+  }),
+  app,
+};
 
 
 // 'use strict';
