@@ -1,37 +1,49 @@
-const { app } = require('../src/server'); // Corrected the import path
 const supertest = require('supertest');
-const { sequelize, Pokemon } = require('../src/models');
+const { app } = require('../src/server');
+const { sequelize, Player, Team } = require('../src/models');
 
 const request = supertest(app);
 
 beforeAll(async () => {
-  await sequelize.sync();
-  await Pokemon.create({
-    name: 'test',
-    type: 'test',
-    attackPoints: 0,
-    healthPoints:0
-  });
+  await sequelize.sync({ force: true }); // Sync the database before running tests
 });
+
 afterAll(async () => {
-  await sequelize.drop();
+  await sequelize.close(); // Close the database connection after all tests are done
 });
 
-describe('Express Server', () => {
-  it('Should read all pokemon in the database and respond with status 200', async () => {
-    let response = await request.get('/api/pokemon');
-    expect(response.status).toEqual(200);
-    expect(response.body.length > 0).toBeTruthy();
-  });
-  it('Should create a new Pokemon and return a status 200', async () => {
-    let response = await request.post('/api/pokemon').send({
-      name: 'test2',
-      type: 'test2',
-      healthPoints: 10,
-      attackPoints: 10,
-    });
+describe('Player routes', () => {
+  it('Should get all players from the database', async () => {
+    // Add some mock players to the database
+    await Player.bulkCreate([
+      { name: 'Player 1', position: 'Position 1', Points: 10, Rebounds: 5, Assists: 3 },
+      { name: 'Player 2', position: 'Position 2', Points: 15, Rebounds: 8, Assists: 6 },
+    ]);
 
-    expect(response.status).toEqual(200);
-    expect(response.body.name).toEqual('test2');
+    // Make a GET request to /api/player and check if the response is successful
+    const response = await request.get('/api/player');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2); // Assuming there are 2 players in the database
   });
-})
+
+  // Add more test cases for other player routes if needed
+});
+
+describe('Team routes', () => {
+  it('Should get all teams from the database', async () => {
+    // Add some mock teams to the database
+    await Team.bulkCreate([
+      { name: 'Team 1', location: 'Location 1', wins: 5, losses: 3 },
+      { name: 'Team 2', location: 'Location 2', wins: 8, losses: 1 },
+    ]);
+
+    // Make a GET request to /api/team and check if the response is successful
+    const response = await request.get('/api/team');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(2); // Assuming there are 2 teams in the database
+  });
+
+  // Add more test cases for other team routes if needed
+});
+
+// Add more test suites for other routes if needed
