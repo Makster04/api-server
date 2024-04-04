@@ -1,26 +1,36 @@
 'use strict';
 
-require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const playerRouter = require('./routes/Player');
-const teamRouter = require('./routes/Team');
+const bodyParser = require('body-parser');
+const playerRoutes = require('./routes/Player');
+const teamRoutes = require('./routes/Team');
 
-const app  = express();
-app.use(cors());
-app.use(express.json());
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// apply routing
-app.use('/api', playerRouter);
-app.use('/api', teamRouter);
+// Middleware
+app.use(bodyParser.json());
 
+// Routes
+app.use('/api', playerRoutes); // Prefix player routes with '/api'
+app.use('/api', teamRoutes);   // Prefix team routes with '/api'
 
-module.exports = {
-  start: (port) => app.listen(port, () => {
-    console.log('API SERVER RUNNING ON PORT ::', port);
-  }),
-  app,
-};
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
+
+// Export the app
+module.exports = app;
+
+// Starting the server
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
 
 // 'use strict';
 
