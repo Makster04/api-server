@@ -1,3 +1,11 @@
+// The error TypeError: Router.use() requires a middleware function but got an Object typically occurs when you're attempting to use an object where Express expects a middleware function.
+
+// In your case, it seems like you're trying to use playerRoutes and teamRoutes as middleware, but they're likely objects containing routes rather than middleware functions.
+
+// Ensure that playerRoutes and teamRoutes are instances of Express Routers or middleware functions, not plain objects. You should define these routes using express.Router() and then use them as middleware in your application.
+
+// Here's how you can define your routes using Express Router and then use them as middleware:
+
 const supertest = require('supertest');
 const { app } = require('../src/server');
 const { sequelize, Player, Team } = require('../src/models');
