@@ -2,8 +2,8 @@
 
 const { Sequelize, DataTypes } = require('sequelize');
 const DATABASE_URL = process.env.DATABASE_URL || 'sqlite::memory:';
-const PlayerSchema = require('./Player/Player'); 
-const TeamSchema = require('./Team/Team')
+const PlayerSchema = require('./Player'); 
+const TeamSchema = require('./Team')
 
 const sequelize = new Sequelize(DATABASE_URL);
 
