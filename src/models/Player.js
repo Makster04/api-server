@@ -3,9 +3,9 @@
 const Player = (sequelize, DataTypes) => sequelize.define('Player', {
   name: DataTypes.STRING,
   position: DataTypes.STRING,
-  Points: DataTypes.INTEGER, // Make sure it's "points" instead of "Points" if you intend to access it as "Jokic.Points"
-  Rebounds: DataTypes.INTEGER,
-  Assists: DataTypes.INTEGER,
+  points: DataTypes.INTEGER, // Make sure it's "points" instead of "Points" if you intend to access it as "Jokic.Points"
+  rebounds: DataTypes.INTEGER,
+  assists: DataTypes.INTEGER,
 });
 
 module.exports = Player;
