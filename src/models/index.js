@@ -2,26 +2,23 @@
 
 const { Sequelize, DataTypes } = require('sequelize');
 const DATABASE_URL = process.env.DATABASE_URL || 'sqlite::memory:';
-const PlayerSchema = require('./Player'); 
-const TeamSchema = require('./Team')
+const PlayerSchema = require('./players.js'); 
+const TeamSchema = require('./teams.js');
+const Collection = require('./collection.js');
+
 
 const sequelize = new Sequelize(DATABASE_URL);
 
+const Player = PlayerSchema(sequelize, DataTypes);
+const Team = TeamSchema(sequelize, DataTypes);
+
+Team.hasMany(Team, {foreignKey: 'personId', sourceKey: 'id' });
+Player.belongsTo(Player, {foreignKey: 'personId', targetKey: 'id'});
+
+
 module.exports = {
-  Player: PlayerSchema(sequelize, DataTypes),
-  Team: TeamSchema(sequelize, DataTypes),
-  sequelize
-}
-
-// 'use strict';
-
-// const { Sequelize, DataTypes } = require('sequelize');
-// const DATABASE_URL = process.env.DATABASE_URL || 'sqlite::memory:';
-// const PokemonSchema = require('./Pokemon'); 
-
-// const sequelize = new Sequelize(DATABASE_URL);
-
-// module.exports = {
-//   Pokemon: PokemonSchema(sequelize, DataTypes),
-//   sequelize
-// }
+  Player,
+  Team,
+  sequelize,
+  Collection,
+};

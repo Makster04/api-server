@@ -1,77 +1,35 @@
 'use strict';
 
-const express = require('express');
-const { Player } = require('../models'); // Corrected import for Player model
-const { Team } = require('../models'); // Added import for Team model
+const { Player, Collection } = require('../models');
 
+const express = require('express');
 const router = express.Router();
 
-// Reading from the player table
-router.get('/player', async (req, res) => {
-  let records = await Player.findAll();
-  res.json(records);
+const playerCollection = new Collection(Player);
+
+router.get('/players', async (req, res) => {
+  let players = await playerCollection.read();
+  res.json(players);
 });
 
-router.get('/player/:id', async (req, res) => {
-  let record = await Player.findOne({ where: { id: req.params.id } });
-  res.json(record);
+router.get('/players/:id', async (req, res) => {
+  let player = await playerCollection.readOne(req.params.id);
+  res.json(player);
 });
 
-// Create a new player in the table
-router.post('/player', async (req, res) => {
-  let record = await Player.create(req.body);
-  res.json(record);
+router.post('/players', async (req, res) => {
+  let player = await playerCollection.create(req.body);
+  res.json(player);
 });
 
-// Update an existing player in the table
-router.put('/player/:id', async (req, res) => {
-  let record = await Player.update(req.body, { where: { id: req.params.id } });
-  res.json(record);
+router.put('/players/:id', async (req, res) => {
+  let player = await playerCollection.update(req.params.id, req.body);
+  res.json(player);
 });
 
-// Remove an existing player from the table
-router.delete('/player/:id', async (req, res) => {
-  await Player.destroy({ where: { id: req.params.id } });
-  res.status(204).end();
+router.delete('/players/:id', async (req, res) => {
+  let player = await playerCollection.delete(req.params.id);
+  res.json(player);
 });
-
-// Similar routes for teams can be added
 
 module.exports = router;
-
-
-// 'use strict';
-
-// // define all routing logic for our RESTful service
-// const express = require('express');
-// const { Pokemon } = require('../models');
-
-// const router = express.Router();
-
-// // router.use(validator);
-
-// // reading from the pokemon table
-// router.get('/pokemon', async (req, res) => {
-//   let records = await Pokemon.findAll();
-//   res.json(records);
-// });
-
-// router.get('/pokemon/:id', async (req, res) => {
-//   let records = await Pokemon.findOne({ where: { id: req.params.id} });
-//   res.json(records);
-// });
-
-// // create a new pokmeon in the table
-// router.post('/pokemon',  async(req, res) => {
-//   // where is the pokemon data?
-//   let record = await Pokemon.create(req.body);
-//   res.json(record);
-// });
-
-// //update an existing pokemon in the table
-// router.put('/pokemon/:id', (req, res) => {});
-
-// // remove an existing pokemon in the table
-// router.delete('/pokemon/:id', (req, res) => {});
-
-// module.exports = router;
