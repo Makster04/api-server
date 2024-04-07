@@ -1,73 +1,84 @@
+'use strict';
+
+const { app } = require('../src/server.js');
 const supertest = require('supertest');
-const { app } = require('../src/server');
-const { sequelize, Player, Team } = require('../src/models');
+const { sequelize, Country } = require('../src/models');
 
 const request = supertest(app);
 
 beforeAll(async () => {
-  await sequelize.sync({ force: true });
+  await sequelize.sync();
+  await Country.create({
+    name: 'Testland',
+    population: 1000000,
+    HDI: 0.9,
+    nativeLanguage: 'English',
+  });
 });
 
 afterAll(async () => {
-  await sequelize.close();
+  await sequelize.drop();
 });
 
-describe('Player routes', () => {
-  it('Should get all players from the database', async () => {
-    await Player.create({ name: 'Player 1', position: 'Position 1', points: 10, rebounds: 5, assists: 3 });
-    await Player.create({ name: 'Player 2', position: 'Position 2', points: 15, rebounds: 8, assists: 6 });
+describe('Express Server', () => {
+  test('Should return a 404 for an invalid route', async () => {
+    let response = await request.get('/person');
+    expect(response.status).toEqual(404);
+    expect(response.text).toEqual('Invalid Route. Page not Found.');
+  }); 
+  
+  test('Should return a 404 for an bad method', async () => {
+    let response = await request.post('/person');
+    expect(response.status).toEqual(404);
+    expect(response.text).toEqual('Invalid Route. Page not Found.');
+  });
 
-    const response = await request.get('/api/player');
+  xtest('Should return a 500 when no id is provided', async () => {
+    let response = await request.delete('/api/country/');
+    expect(response.status).toEqual(500);
+    expect(response.text).toEqual('Server Error.');
+  });
+
+  //CREATE 1
+  test('Should create a country in the database and respond with status 200', async () => {
+    const newCountry = {
+      name: 'Wonderland',
+      population: 1500000,
+      HDI: 0.95,
+      nativeLanguage: 'Wonderish',
+    };
+    let response = await request.post('/api/country').send(newCountry);
+    expect(response.status).toEqual(200);
+    expect(response.body.name).toBe(newCountry.name);
+  });
+
+  // GET ALL
+  test('Should read all countries in the database and respond with status 200', async () => {
+    let response = await request.get('/api/country');
+    expect(response.status).toEqual(200);
+    expect(response.body[0].name).toEqual('Testland');
+  });
+
+  //GET 1
+  test('Should read one country in the database and return it with a status 200', async () => {
+    let response = await request.get('/api/country/1');
+    expect(response.status).toEqual(200);
+    expect(response.body.name).toEqual('Testland');
+  });
+
+  test('Should read one country in the database and return it with a status 200', async () => {
+    let response = await request.put('/api/country/1');
+    expect(response.status).toEqual(200);
+    expect(response.body.name).toEqual('Testland');
+  });
+
+  test('Should delete one country in the database and return the now empty object with a status of 200', async () => {
+    let response = await request.delete('/api/country/1');
     expect(response.status).toBe(200);
-    expect(response.body.length).toBe(2);
+    expect(response.body).toBeTruthy();
   });
 });
 
-describe('Team routes', () => {
-  it('Should get all teams from the database', async () => {
-    await Team.create({ name: 'Team 1', location: 'Location 1', wins: 5, losses: 3 });
-    await Team.create({ name: 'Team 2', location: 'Location 2', wins: 8, losses: 1 });
-
-    const response = await request.get('/api/team');
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(2);
-  });
-});
-
-
-
-// const { app } = require('../src/server');
-// const supertest = require('supertest');
-// const { sequelize, Pokemon } = require('../src/models');
-
-// const request = supertest(app);
-
-// beforeAll(async () => {
-//   await sequelize.sync();
-//   await Pokemon.create({
-//     name: 'test',
-//     type: 'test',
-//     attackPoints: 0,
-//     healthPoints:0
-//   });
-// });
-// afterAll(async () => {
-//   await sequelize.drop();
-// });
-
-// describe('Express Server', () => {
-//   it('Should read all pokemon in the database and respond with status 200', async () => {
-//     let response = await request.get('/api/pokemon');
-//     expect(response.status).toEqual(200);
-//     expect(response.body.length > 0).toBeTruthy();
-//   });
-//   it('Should create a new Pokemon and return a status 200', async () => {
-//     let response = await request.post('/api/pokemon').send({
-//       name: 'test2',
-//       type: 'test2',
-//       healthPoints: 10,
-//       attackPoints: 10,
-//     });
 
 //     expect(response.status).toEqual(200);
 //     expect(response.body.name).toEqual('test2');
