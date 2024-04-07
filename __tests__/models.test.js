@@ -1,24 +1,25 @@
-const { sequelize, Player } = require('../src/models');
+'use strict';
+const { sequelize, Country } = require('../../src/models');
 
 // setup script
 beforeAll(async () => {
   await sequelize.sync();
 });
 
-describe('Player Model', () => {
-  it('Should create a player row', async () => {
-    const jokic = await Player.create({
-      name: 'jokic',
-      points: 23,
-      rebounds: 14,
-      assists: 9,
+describe('Country Model', () => {
+  it('Should create a country row', async () => {
+    const testCountry = await Country.create({
+      name: 'Testland',
+      population: 1000000,
+      HDI: 0.9,
+      nativeLanguage: 'English',
     });
 
-    expect(jokic.name).toEqual('jokic');
-    expect(jokic.points).toEqual(23);
-    expect(jokic.rebounds).toEqual(14);
-    expect(jokic.assists).toEqual(9);
+    expect(testCountry.name).toEqual('Testland');
+    expect(testCountry.population).toEqual(1000000);
+    expect(testCountry.HDI).toEqual(0.9);
+    expect(testCountry.nativeLanguage).toEqual('English');
   });
 
-  xit('Should read a pokemon from the table', async () => {});
+  it('Should read a country from the table', async () => {});
 });

@@ -1,3 +1,3 @@
-test('Testing validator middleware', () => {
+xtest('Testing validator middleware', () => {
 
 });
