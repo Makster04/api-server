@@ -1,30 +1,31 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser');
-const playerRoutes = require('./routes/Player');
-const teamRoutes = require('./routes/Team');
+const cors = require('cors');
+const notFound = require('./error-handlers/404.js');
+const serverError = require('./error-handlers/500.js');
+const logger = require('./middleware/logger.js');
+const countryRouter = require('./routes/country.js');
+const cityRouter = require('./routes/city.js');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json()); 
+app.use(logger);
 
-// Middleware
-app.use(bodyParser.json());
+app.use('/api/country', countryRouter);
+app.use('/api/city', cityRouter);
 
-// Routes
-app.use('/api', playerRoutes); // Prefix player routes with '/api'
-app.use('/api', teamRoutes);   // Prefix team routes with '/api'
+app.use(serverError);
+app.use(notFound);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something went wrong!');
-});
+module.exports = {
+  start: (port) => app.listen(port, () => {
+    console.log(`API SERVER RUNNING ON PORT :: ${port}`);
+  }),
+  app,
+};
 
-// Export the app
-module.exports = app;
-
-// Starting the server
 module.exports = {
   start: (port) => app.listen(port, () => {
     console.log('API SERVER RUNNING ON PORT ::', port);
