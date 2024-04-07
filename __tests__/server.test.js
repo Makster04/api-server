@@ -22,13 +22,13 @@ afterAll(async () => {
 
 describe('Express Server', () => {
   test('Should return a 404 for an invalid route', async () => {
-    let response = await request.get('/person');
+    let response = await request.get('/country');
     expect(response.status).toEqual(404);
     expect(response.text).toEqual('Invalid Route. Page not Found.');
   }); 
   
   test('Should return a 404 for an bad method', async () => {
-    let response = await request.post('/person');
+    let response = await request.post('/country');
     expect(response.status).toEqual(404);
     expect(response.text).toEqual('Invalid Route. Page not Found.');
   });
