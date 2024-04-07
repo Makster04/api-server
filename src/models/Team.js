@@ -1,21 +1,8 @@
 'use strict';
-// using sequelize to model out data, the string is the table name
-const Team = (sequelize, DataTypes) => sequelize.define('Team', {
-  name: DataTypes.STRING,
-  location: DataTypes.STRING,
-  wins: DataTypes.INTEGER,
-  losses: DataTypes.INTEGER,
+const City = (sequelize, DataTypes) => sequelize.define('City', {
+  name: DataTypes.STRING(100),
+  population: DataTypes.INTEGER,
+  HDI: DataTypes.FLOAT,
+  nativeLanguage: DataTypes.STRING(20),
 });
-
-module.exports = Team;
-
-// 'use strict';
-// // using sequelize to model out data, the string is the table name
-// const Pokemon = (sequelize, DataTypes) => sequelize.define('Pokemon', {
-//   name: DataTypes.STRING,
-//   type: DataTypes.STRING,
-//   healthPoints: DataTypes.INTEGER,
-//   attackPoints: DataTypes.INTEGER,
-// });
-
-// module.exports = Pokemon;
+module.exports = City;
