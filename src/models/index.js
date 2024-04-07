@@ -1,27 +1,18 @@
 'use strict';
-
 const { Sequelize, DataTypes } = require('sequelize');
 const DATABASE_URL = process.env.DATABASE_URL || 'sqlite::memory:';
-const PlayerSchema = require('./Player'); 
-const TeamSchema = require('./Team')
+const CountrySchema = require('./country.js'); 
+const CitySchema = require('./city.js');
+const Collection = require('./collection.js');
 
 const sequelize = new Sequelize(DATABASE_URL);
 
+const Country = CountrySchema(sequelize, DataTypes);
+const City = CitySchema(sequelize, DataTypes);
+
 module.exports = {
-  Player: PlayerSchema(sequelize, DataTypes),
-  Team: TeamSchema(sequelize, DataTypes),
-  sequelize
-}
-
-// 'use strict';
-
-// const { Sequelize, DataTypes } = require('sequelize');
-// const DATABASE_URL = process.env.DATABASE_URL || 'sqlite::memory:';
-// const PokemonSchema = require('./Pokemon'); 
-
-// const sequelize = new Sequelize(DATABASE_URL);
-
-// module.exports = {
-//   Pokemon: PokemonSchema(sequelize, DataTypes),
-//   sequelize
-// }
+  Country,
+  City,
+  sequelize,
+  Collection,
+};
