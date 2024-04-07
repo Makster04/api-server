@@ -1,45 +1,36 @@
 'use strict';
-
-// define all routing logic for our RESTful service
 const express = require('express');
-const { Pets } = require('../models');
+const { City } = require('../models/index.js');
 const { validateId, validateBody } = require('../middleware/validator.js');
 
 const router = express.Router();
 
-//use validateBody
 router.post('/', validateBody, async(req, res) => {
-  let record = await Pets.create(req.body);
+  let record = await City.create(req.body);
   res.json(record);
 });
 
-
 router.get('/', async (req, res) => {
-  let records = await Pets.findAll();
+  let records = await City.findAll();
   res.json(records);
 });
 
-//use validateID
 router.get('/:id', validateId, async (req, res) => {
-  let records = await Pets.findOne({ where: { id: req.params.id} });
+  let records = await City.findOne({ where: { id: req.params.id} });
   res.json(records);
 });
 
-//use validateID
 router.put('/:id', validateId, async (req, res) => {
-  let person = await Pets.findOne({ where: { id: req.params.id} });
-  let records = await person.update(req.body, {returning:true});
-  await person.save();
+  let city = await City.findOne({ where: { id: req.params.id} });
+  let records = await city.update(req.body, {returning:true});
+  await city.save();
   res.json(records);
-  
 });
 
-//use validateID
 router.delete('/:id', validateId, async (req, res) => {
-  let person = await Pets.findOne({ where: { id: req.params.id} });
-  let records = person.destroy();
+  let city = await City.findOne({ where: { id: req.params.id} });
+  let records = city.destroy();
   res.json(records);
-  
 });
 
 module.exports = router; 
