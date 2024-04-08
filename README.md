@@ -1,7 +1,5 @@
 # api-server
-Dynamic API Phase 2: Perform CRUD Operations on a database
-
-## ERROR Encountered, according to ChatGBT:
+[Deployment](https://api-server-b9i6.onrender.com)
 
 * **The error messages you're encountering suggest a few issues in your code and project setup:**
 
